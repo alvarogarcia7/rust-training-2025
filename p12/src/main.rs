@@ -1,5 +1,5 @@
 fn main() {
-    let u = 6u32;
-    let u = 6u32 as u64;
+    let _ = 6u32;
+    let _ = 7u32 as u64;
     println!("Hello, world!");
 }
