@@ -1,3 +1,3 @@
-pub fn celsius2fahrenheit(i: i32) -> i32 {
-    0
+pub fn celsius2fahrenheit(celsius: i32) -> i32 {
+    ((celsius * 9) / 5) + 32
 }
