@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod tests {
+mod celsius2fahrenheit_tests {
     use p22::calc::celsius2fahrenheit;
 
     #[test]
@@ -18,5 +18,27 @@ mod tests {
     #[test]
     fn test_celsius2fahrenheit_at_minus_15() {
         assert_eq!(celsius2fahrenheit(-15), 5);
+    }
+}
+#[cfg(test)]
+mod fahrenheit2celsius_tests {
+    use p22::calc::fahrenheit2celsius;
+
+    #[test]
+    fn test_fahrenheit2celsius_at_0() {
+        assert_eq!(fahrenheit2celsius(32), 0);
+    }
+
+    #[test]
+    fn test_fahrenheit2celsius_at_2() {
+        assert_eq!(fahrenheit2celsius(35), 2);
+    }
+    #[test]
+    fn test_fahrenheit2celsius_at_20() {
+        assert_eq!(fahrenheit2celsius(68), 20);
+    }
+    #[test]
+    fn test_fahrenheit2celsius_at_minus_15() {
+        assert_eq!(fahrenheit2celsius(5), -15);
     }
 }
