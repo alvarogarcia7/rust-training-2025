@@ -1,4 +1,4 @@
-fn f1<'a>(a: &'a mut (u32, u32), b: bool) -> &'a mut u32 {
+fn f1(a: &mut (u32, u32), b: bool) -> &mut u32 {
     if !b { &mut a.0 } else { &mut a.1 }
 }
 #[cfg(test)]
