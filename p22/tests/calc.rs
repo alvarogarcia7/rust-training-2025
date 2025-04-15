@@ -6,6 +6,7 @@ mod tests {
     fn test_celsius2fahrenheit_at_0() {
         assert_eq!(celsius2fahrenheit(0), 32);
     }
+
     #[test]
     fn test_celsius2fahrenheit_at_2() {
         assert_eq!(celsius2fahrenheit(2), 35);
