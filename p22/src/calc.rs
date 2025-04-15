@@ -24,6 +24,13 @@ pub fn fahrenheit2celsius(fahrenheit: i32) -> i32 {
 const PRECOMPUTED_VALUES: [u64; 3] = [0, 1, 1];
 
 /// Fibonacci series, in the loop form
+/// ```
+/// use p22::calc::fibonacci_loop;
+/// assert_eq!(
+///   (0..10).map(fibonacci_loop).collect::<Vec<_>>(),
+///   [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+/// );
+/// ```
 pub fn fibonacci_loop(limit: u32) -> u64 {
     let mut n = if limit == 0 {
         PRECOMPUTED_VALUES[0]
@@ -45,6 +52,12 @@ pub fn fibonacci_loop(limit: u32) -> u64 {
 }
 
 /// Fibonacci series, in the recursive form
+/// ```
+/// use p22::calc::fibonacci_rec;
+/// assert_eq!(fibonacci_rec(0), 0);
+/// assert_eq!(fibonacci_rec(1), 1);
+/// assert_eq!(fibonacci_rec(2), 1);
+/// ```
 pub fn fibonacci_rec(limit: u32) -> u64 {
     if limit == 0 {
         PRECOMPUTED_VALUES[0]
