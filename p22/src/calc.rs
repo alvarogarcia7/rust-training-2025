@@ -22,6 +22,8 @@ pub fn fahrenheit2celsius(fahrenheit: i32) -> i32 {
 }
 
 const PRECOMPUTED_VALUES: [u64; 3] = [0, 1, 1];
+
+/// Fibonacci series, in the loop form
 pub fn fibonacci_loop(limit: u32) -> u64 {
     let mut n = if limit == 0 {
         PRECOMPUTED_VALUES[0]
@@ -42,6 +44,7 @@ pub fn fibonacci_loop(limit: u32) -> u64 {
     n
 }
 
+/// Fibonacci series, in the recursive form
 pub fn fibonacci_rec(limit: u32) -> u64 {
     if limit == 0 {
         PRECOMPUTED_VALUES[0]
