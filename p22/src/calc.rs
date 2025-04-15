@@ -59,11 +59,9 @@ pub fn fibonacci_loop(limit: u32) -> u64 {
 /// assert_eq!(fibonacci_rec(2), 1);
 /// ```
 pub fn fibonacci_rec(limit: u32) -> u64 {
-    if limit == 0 {
-        PRECOMPUTED_VALUES[0]
-    } else if limit == 1 {
-        PRECOMPUTED_VALUES[1]
-    } else {
-        fibonacci_rec(limit - 1) + fibonacci_rec(limit - 2)
+    match limit {
+        0 => PRECOMPUTED_VALUES[0],
+        1 => PRECOMPUTED_VALUES[1],
+        _ => fibonacci_rec(limit - 1) + fibonacci_rec(limit - 2),
     }
 }
