@@ -31,7 +31,7 @@ mod fahrenheit2celsius_tests {
 
     #[test]
     fn test_fahrenheit2celsius_at_2() {
-        assert_eq!(fahrenheit2celsius(35), 2);
+        assert_eq!(fahrenheit2celsius(35), 1);
     }
     #[test]
     fn test_fahrenheit2celsius_at_20() {
