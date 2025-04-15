@@ -42,3 +42,16 @@ mod fahrenheit2celsius_tests {
         assert_eq!(fahrenheit2celsius(5), -15);
     }
 }
+
+#[cfg(test)]
+mod fibonacci_tests {
+    use p22::calc::fibonacci_loop;
+
+    #[test]
+    fn test_fibonacci() {
+        assert_eq!(
+            (0..13).map(fibonacci_loop).collect::<Vec<_>>(),
+            [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144]
+        );
+    }
+}

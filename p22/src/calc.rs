@@ -20,3 +20,24 @@ pub fn celsius2fahrenheit(celsius: i32) -> i32 {
 pub fn fahrenheit2celsius(fahrenheit: i32) -> i32 {
     (5 * (fahrenheit - 32)) / 9
 }
+
+const PRECOMPUTED_VALUES: [u64; 3] = [0, 1, 1];
+pub fn fibonacci_loop(limit: u32) -> u64 {
+    let mut n_minus_1 = PRECOMPUTED_VALUES[1];
+    let mut n_minus_2 = PRECOMPUTED_VALUES[0];
+    let mut n = if limit == 0 {
+        PRECOMPUTED_VALUES[0]
+    } else if limit == 1 {
+        PRECOMPUTED_VALUES[1]
+    } else {
+        PRECOMPUTED_VALUES[2]
+    };
+    for _ in 2..=limit {
+        // compute: fib(n) = fib(n-1) + fib(n-2)
+        n = n_minus_1 + n_minus_2;
+        // shift the previous values
+        n_minus_2 = n_minus_1;
+        n_minus_1 = n;
+    }
+    n
+}
