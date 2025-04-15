@@ -41,3 +41,13 @@ pub fn fibonacci_loop(limit: u32) -> u64 {
     }
     n
 }
+
+pub fn fibonacci_rec(limit: u32) -> u64 {
+    if limit == 0 {
+        PRECOMPUTED_VALUES[0]
+    } else if limit == 1 {
+        PRECOMPUTED_VALUES[1]
+    } else {
+        fibonacci_rec(limit - 1) + fibonacci_rec(limit - 2)
+    }
+}
