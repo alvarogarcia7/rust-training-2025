@@ -1,6 +1,6 @@
 /// Convert Celsius to Fahrenheit degrees
 ///
-/// Note: This function rounds to the nearest integer, half up. https://en.wikipedia.org/wiki/Rounding#Rounding_half_up
+/// Note: This function rounds to the nearest integer, half up. <https://en.wikipedia.org/wiki/Rounding#Rounding_half_up>
 ///
 /// ```
 /// use p22::calc::celsius2fahrenheit;
