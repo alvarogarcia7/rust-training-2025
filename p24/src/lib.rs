@@ -35,20 +35,18 @@ mod tests {
         assert_eq!(*result, 0);
     }
     #[test]
-    #[allow(clippy::useless_vec)]
     fn f2_0() {
-        let mut input = vec![0, 1, 2, 3];
-        let slice = &mut input[0..=3];
+        let mut vec1 = vec![0, 1, 2, 3];
+        let slice = vec1.as_mut_slice();
 
         let result = f2(slice, 0);
 
         assert_eq!(*result, 0);
     }
     #[test]
-    #[allow(clippy::useless_vec)]
     fn f2_2() {
-        let mut input = vec![0, 1, 2, 3];
-        let slice = &mut input[0..=3];
+        let mut vec1 = vec![0, 1, 2, 3];
+        let slice = vec1.as_mut_slice();
 
         let result = f2(slice, 2);
 
@@ -56,12 +54,11 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::useless_vec)]
     fn f3_0() {
         let mut vec1 = vec![0, 1, 2, 3];
         vec1.reverse();
-        let mut input = vec1;
-        let slice = &mut input[0..=3];
+        let vec1 = vec1.as_mut_slice();
+        let slice = vec1;
 
         let result = f3(slice, 0);
 
@@ -72,8 +69,7 @@ mod tests {
     fn f3_2() {
         let mut vec1 = vec![0, 1, 2, 3];
         vec1.reverse();
-        let mut input = vec1;
-        let slice = &mut input[0..=3];
+        let slice = &mut vec1[0..=3];
 
         let result = f3(slice, 2);
 
