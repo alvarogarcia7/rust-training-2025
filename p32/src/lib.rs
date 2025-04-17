@@ -21,6 +21,43 @@ struct Bank {
     debit_interest: u64,
 }
 
+impl Bank {
+    pub(crate) fn balance_of_user(&self, user_name: String) -> Balance {
+        Balance::new(self.users[self.index_of_user_by_username(user_name).unwrap()].balance)
+    }
+}
+
+#[derive(Debug)]
+struct Balance {
+    value: i64,
+}
+
+impl Balance {
+    pub(crate) fn new(value: i64) -> Self {
+        Balance { value }
+    }
+}
+
+impl PartialEq<Self> for Balance {
+    fn eq(&self, other: &Self) -> bool {
+        self.value == other.value
+    }
+}
+
+impl Bank {
+    pub(crate) fn transfer_funds(&mut self, sender: String, receiver: String, amount: i64) {
+        let sender_position = self.index_of_user_by_username(sender).unwrap();
+        let receiver_position = self.index_of_user_by_username(receiver).unwrap();
+
+        self.users[sender_position].balance -= amount;
+        self.users[receiver_position].balance += amount;
+    }
+
+    fn index_of_user_by_username(&self, username: String) -> Option<usize> {
+        self.users.iter().position(|u| u.name == username)
+    }
+}
+
 struct BalanceSheet {
     liabilities: u64,
     assets: u64,
@@ -111,5 +148,23 @@ mod tests {
 
         assert_eq!(balance_sheet.liabilities, 0u64);
         assert_eq!(balance_sheet.assets, 3u64);
+    }
+    #[test]
+    fn transfer_funds_happy_path() {
+        let user1 = User::new("name1".to_string(), 0u64, 2i64);
+        let user2 = User::new("name2".to_string(), 0u64, 1i64);
+        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        bank.transfer_funds("name1".to_string(), "name2".to_string(), 2);
+
+        assert_eq!(bank.calc_balance().assets, 3u64);
+        assert_eq!(
+            bank.balance_of_user("name1".to_string()),
+            Balance::new(0i64)
+        );
+        assert_eq!(
+            bank.balance_of_user("name2".to_string()),
+            Balance::new(3i64)
+        );
     }
 }
