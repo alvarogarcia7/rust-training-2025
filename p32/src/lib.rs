@@ -1,4 +1,6 @@
-use crate::TransferFundsError::{ReceiverNotExistsError, SenderNotExistsError};
+use crate::TransferFundsError::{
+    ReceiverNotExistsError, SenderNotEnoughBalance, SenderNotExistsError,
+};
 
 struct User {
     name: String,
@@ -66,6 +68,10 @@ impl Bank {
         let sender_position = sender_position.unwrap();
         let receiver_position = receiver_position.unwrap();
 
+        if self.users[sender_position].balance < amount {
+            return Err(SenderNotEnoughBalance);
+        }
+
         self.users[sender_position].balance -= amount;
         self.users[receiver_position].balance += amount;
 
@@ -124,6 +130,7 @@ impl Bank {
 enum TransferFundsError {
     SenderNotExistsError,
     ReceiverNotExistsError,
+    SenderNotEnoughBalance,
 }
 
 #[cfg(test)]
@@ -222,6 +229,26 @@ mod tests {
         assert_eq!(bank.calc_balance().assets, 1u64);
         assert_eq!(
             bank.balance_of_user("name1".to_string()),
+            Balance::new(1i64)
+        );
+    }
+
+    #[test]
+    fn transfer_funds_when_not_enough_balance() {
+        let user1 = User::new("name1".to_string(), 0u64, 2i64);
+        let user2 = User::new("name2".to_string(), 0u64, 1i64);
+        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        let result = bank.transfer_funds("name1".to_string(), "name2".to_string(), 3);
+
+        assert!(result.is_err());
+        assert_eq!(bank.calc_balance().assets, 3u64);
+        assert_eq!(
+            bank.balance_of_user("name1".to_string()),
+            Balance::new(2i64)
+        );
+        assert_eq!(
+            bank.balance_of_user("name2".to_string()),
             Balance::new(1i64)
         );
     }
