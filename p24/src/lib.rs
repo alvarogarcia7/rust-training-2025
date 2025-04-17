@@ -10,6 +10,33 @@ fn f3(a: &mut [u32], n: usize) -> &mut u32 {
     &mut a[a.len() - 1 - n]
 }
 
+fn f4(a: &[u32]) -> (&[u32], &[u32], &[u32], &[u32]) {
+    let increments = match a.len() % 4 {
+        0 => [0, 0, 0, 0],
+        1 => [1, 0, 0, 0],
+        2 => [1, 0, 1, 0],
+        3 => [1, 0, 1, 1],
+        _ => unreachable!(),
+    };
+
+    let remaining = a.len() - a.len() % 4;
+
+    let elements = (1..=4).map(|_| remaining / 4).collect::<Vec<_>>();
+
+    let mut result = [0, 0, 0, 0];
+
+    for (i, (a, b)) in elements.iter().zip(&increments).enumerate() {
+        result[i] = a + b;
+    }
+
+    (
+        &a[0..result[0]],
+        &a[result[0]..result[0] + result[1]],
+        &a[result[0] + result[1]..result[0] + result[1] + result[2]],
+        &a[result[0] + result[1] + result[2]..result[0] + result[1] + result[2] + result[3]],
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -74,5 +101,30 @@ mod tests {
         let result = f3(slice, 2);
 
         assert_eq!(*result, 2);
+    }
+
+    #[test]
+    fn f4_equal_parts() {
+        let vec1 = vec![0, 1, 2, 3];
+        let slice = vec1.as_slice();
+
+        let (slice1, slice2, slice3, slice4) = f4(slice);
+
+        assert_eq!(slice1, [0].as_slice());
+        assert_eq!(slice2, [1].as_slice());
+        assert_eq!(slice3, [2].as_slice());
+        assert_eq!(slice4, [3].as_slice());
+    }
+    #[test]
+    fn f4_smaller_than_4() {
+        let vec1 = vec![0, 1];
+        let slice = vec1.as_slice();
+
+        let (slice1, slice2, slice3, slice4) = f4(slice);
+
+        assert_eq!(slice1, [0].as_slice());
+        assert_eq!(slice2, [].as_slice());
+        assert_eq!(slice3, [1].as_slice());
+        assert_eq!(slice4, [].as_slice());
     }
 }
