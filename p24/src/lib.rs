@@ -127,4 +127,17 @@ mod tests {
         assert_eq!(slice3, [1].as_slice());
         assert_eq!(slice4, [].as_slice());
     }
+
+    #[test]
+    fn f4_smaller_than_6() {
+        let vec1: Vec<u32> = (0..6).collect();
+        let slice = vec1.as_slice();
+
+        let (slice1, slice2, slice3, slice4) = f4(slice);
+
+        assert_eq!(slice1, [0, 1].as_slice());
+        assert_eq!(slice2, [2].as_slice());
+        assert_eq!(slice3, [3, 4].as_slice());
+        assert_eq!(slice4, [5].as_slice());
+    }
 }
