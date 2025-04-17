@@ -8,6 +8,13 @@ fn f2(a: &mut [u32], n: usize) -> &mut u32 {
 }
 
 fn f3(a: &mut [u32], n: usize) -> &mut u32 {
+    if n >= a.len() {
+        panic!(
+            "index out of bounds: the len is {} but the index is {}",
+            a.len(),
+            n
+        );
+    }
     &mut a[a.len() - 1 - n]
 }
 
@@ -102,6 +109,14 @@ mod tests {
         let result = f3(slice, 2);
 
         assert_eq!(*result, 2);
+    }
+    #[test]
+    #[should_panic(expected = "index out of bounds: the len is 4 but the index is 4")]
+    fn f3_bigger_than_vec_length() {
+        let mut vec1 = [0, 1, 2, 3];
+        let slice = &mut vec1[0..=3];
+
+        f3(slice, 4);
     }
 
     #[test]
