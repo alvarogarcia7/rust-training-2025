@@ -1,3 +1,5 @@
+use crate::TransferFundsError::SenderNotExistsError;
+
 struct User {
     name: String,
     credit_line: u64,
@@ -45,12 +47,26 @@ impl PartialEq<Self> for Balance {
 }
 
 impl Bank {
-    pub(crate) fn transfer_funds(&mut self, sender: String, receiver: String, amount: i64) {
-        let sender_position = self.index_of_user_by_username(sender).unwrap();
-        let receiver_position = self.index_of_user_by_username(receiver).unwrap();
+    pub(crate) fn transfer_funds(
+        &mut self,
+        sender: String,
+        receiver: String,
+        amount: i64,
+    ) -> Result<(), TransferFundsError> {
+        let sender_position = self.index_of_user_by_username(sender);
+        let receiver_position = self.index_of_user_by_username(receiver);
+
+        if sender_position.is_none() {
+            return Err(SenderNotExistsError);
+        }
+
+        let sender_position = sender_position.unwrap();
+        let receiver_position = receiver_position.unwrap();
 
         self.users[sender_position].balance -= amount;
         self.users[receiver_position].balance += amount;
+
+        Ok(())
     }
 
     fn index_of_user_by_username(&self, username: String) -> Option<usize> {
@@ -100,6 +116,10 @@ impl Bank {
             debit_interest,
         }
     }
+}
+
+enum TransferFundsError {
+    SenderNotExistsError,
 }
 
 #[cfg(test)]
@@ -155,8 +175,9 @@ mod tests {
         let user2 = User::new("name2".to_string(), 0u64, 1i64);
         let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
 
-        bank.transfer_funds("name1".to_string(), "name2".to_string(), 2);
+        let result = bank.transfer_funds("name1".to_string(), "name2".to_string(), 2);
 
+        assert!(result.is_ok());
         assert_eq!(bank.calc_balance().assets, 3u64);
         assert_eq!(
             bank.balance_of_user("name1".to_string()),
@@ -165,6 +186,22 @@ mod tests {
         assert_eq!(
             bank.balance_of_user("name2".to_string()),
             Balance::new(3i64)
+        );
+    }
+    #[test]
+    fn transfer_funds_when_sender_does_not_exist() {
+        let user2 = User::new("name2".to_string(), 0u64, 1i64);
+        let mut bank = Bank::new(vec![user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        let result: Result<(), TransferFundsError> =
+            bank.transfer_funds("nonexisting".to_string(), "name2".to_string(), 2);
+
+        assert!(result.is_err());
+
+        assert_eq!(bank.calc_balance().assets, 1u64);
+        assert_eq!(
+            bank.balance_of_user("name2".to_string()),
+            Balance::new(1i64)
         );
     }
 }
