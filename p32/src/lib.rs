@@ -21,6 +21,34 @@ struct Bank {
     debit_interest: u64,
 }
 
+struct BalanceSheet {
+    liabilities: u64,
+    assets: u64,
+}
+
+impl Bank {
+    pub(crate) fn calc_balance(&self) -> BalanceSheet {
+        let mut liabilities: i64 = 0;
+        let mut assets: i64 = 0;
+
+        for user in &self.users {
+            if user.balance >= 0 {
+                assets += user.balance;
+            } else {
+                liabilities += -user.balance;
+            }
+        }
+
+        let liabilities: u64 = liabilities as u64;
+        let assets: u64 = assets as u64;
+
+        BalanceSheet {
+            liabilities,
+            assets,
+        }
+    }
+}
+
 impl Bank {
     pub(crate) fn new(
         users: Vec<User>,
@@ -60,5 +88,28 @@ mod tests {
         assert_eq!(bank.name, "Bank Name".to_string());
         assert_eq!(bank.credit_interest, 4u64);
         assert_eq!(bank.debit_interest, 1u64);
+    }
+
+    #[test]
+    fn calculate_balance_sheet_with_negative_balance() {
+        let user1 = User::new("Name Surname".to_string(), 0u64, -2i64);
+        let user2 = User::new("Name Surname".to_string(), 0u64, 1i64);
+        let bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        let balance_sheet: BalanceSheet = bank.calc_balance();
+
+        assert_eq!(balance_sheet.liabilities, 2u64);
+        assert_eq!(balance_sheet.assets, 1u64);
+    }
+    #[test]
+    fn calculate_balance_sheet_with_positive_balance() {
+        let user1 = User::new("Name Surname".to_string(), 0u64, 2i64);
+        let user2 = User::new("Name Surname".to_string(), 0u64, 1i64);
+        let bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        let balance_sheet: BalanceSheet = bank.calc_balance();
+
+        assert_eq!(balance_sheet.liabilities, 0u64);
+        assert_eq!(balance_sheet.assets, 3u64);
     }
 }
