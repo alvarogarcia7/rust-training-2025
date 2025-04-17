@@ -1,4 +1,4 @@
-use crate::TransferFundsError::SenderNotExistsError;
+use crate::TransferFundsError::{ReceiverNotExistsError, SenderNotExistsError};
 
 struct User {
     name: String,
@@ -58,6 +58,9 @@ impl Bank {
 
         if sender_position.is_none() {
             return Err(SenderNotExistsError);
+        }
+        if receiver_position.is_none() {
+            return Err(ReceiverNotExistsError);
         }
 
         let sender_position = sender_position.unwrap();
@@ -120,6 +123,7 @@ impl Bank {
 
 enum TransferFundsError {
     SenderNotExistsError,
+    ReceiverNotExistsError,
 }
 
 #[cfg(test)]
@@ -201,6 +205,23 @@ mod tests {
         assert_eq!(bank.calc_balance().assets, 1u64);
         assert_eq!(
             bank.balance_of_user("name2".to_string()),
+            Balance::new(1i64)
+        );
+    }
+
+    #[test]
+    fn transfer_funds_when_receiver_does_not_exist() {
+        let user1 = User::new("name1".to_string(), 0u64, 1i64);
+        let mut bank = Bank::new(vec![user1], "Bank Name".to_string(), 4u64, 1u64);
+
+        let result: Result<(), TransferFundsError> =
+            bank.transfer_funds("name1".to_string(), "nonexisting".to_string(), 2);
+
+        assert!(result.is_err());
+
+        assert_eq!(bank.calc_balance().assets, 1u64);
+        assert_eq!(
+            bank.balance_of_user("name1".to_string()),
             Balance::new(1i64)
         );
     }
