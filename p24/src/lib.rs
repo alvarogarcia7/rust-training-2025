@@ -1,3 +1,4 @@
+mod bad_lifetimes;
 fn f1(a: &mut (u32, u32), b: bool) -> &mut u32 {
     if !b { &mut a.0 } else { &mut a.1 }
 }
