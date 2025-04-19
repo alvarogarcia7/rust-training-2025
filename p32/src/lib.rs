@@ -187,6 +187,9 @@ mod tests {
 
         assert!(result.is_ok());
         assert_eq!(bank.calc_balance().assets, 3u64);
+        let bank_helper = BankHelper { bank: &bank };
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(0i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(3i64));
         assert_eq!(
             bank.balance_of_user("name1".to_string()),
             Balance::new(0i64)
