@@ -318,7 +318,7 @@ mod tests {
         bank: &'a Bank,
     }
 
-    impl<'a> BankHelper<'a> {
+    impl BankHelper<'_> {
         fn balance_for(&self, username: &str) -> Balance {
             (*self.bank).balance_of_user(username.to_string())
         }
