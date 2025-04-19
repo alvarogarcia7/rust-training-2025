@@ -55,7 +55,12 @@ impl Bank {
         receiver: String,
         amount: i64,
     ) -> Result<(), TransferFundsError> {
-        let receiver_position = self.index_of_user_by_username(receiver);
+        let receiver_position = match self.index_of_user_by_username(receiver) {
+            None => {
+                return Err(ReceiverNotExistsError);
+            }
+            Some(index) => index,
+        };
 
         let sender_position = match self.index_of_user_by_username(sender) {
             None => {
@@ -63,13 +68,6 @@ impl Bank {
             }
             Some(x) => x,
         };
-        
-
-        if receiver_position.is_none() {
-            return Err(ReceiverNotExistsError);
-        }
-
-        let receiver_position = receiver_position.unwrap();
 
         if self.users[sender_position].balance < amount {
             return Err(SenderNotEnoughBalance);
