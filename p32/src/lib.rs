@@ -25,11 +25,7 @@ struct Bank {
     debit_interest: u64,
 }
 
-impl Bank {
-    pub(crate) fn balance_of_user(&self, user_name: String) -> Balance {
-        Balance::new(self.users[self.index_of_user_by_username(user_name).unwrap()].balance)
-    }
-}
+impl Bank {}
 
 #[derive(Debug)]
 struct Balance {
@@ -243,6 +239,12 @@ mod tests {
     impl<'a> BankHelper<'a> {
         fn balance_for(&self, username: &str) -> Balance {
             (*self.bank).balance_of_user(username.to_string())
+        }
+    }
+
+    impl Bank {
+        pub(crate) fn balance_of_user(&self, user_name: String) -> Balance {
+            Balance::new(self.users[self.index_of_user_by_username(user_name).unwrap()].balance)
         }
     }
 }
