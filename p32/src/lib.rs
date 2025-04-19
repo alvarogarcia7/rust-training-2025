@@ -208,7 +208,7 @@ mod tests {
 
         assert_eq!(bank.calc_balance().assets, 1u64);
         let bank_helper = BankHelper { bank: &bank };
-        assert_eq!(bank_helper.balance_sheet_for("name2"), Balance::new(1i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(1i64));
     }
 
     #[test]
@@ -223,7 +223,7 @@ mod tests {
 
         assert_eq!(bank.calc_balance().assets, 1u64);
         let bank_helper = BankHelper { bank: &bank };
-        assert_eq!(bank_helper.balance_sheet_for("name1"), Balance::new(1i64));
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(1i64));
     }
 
     #[test]
@@ -237,8 +237,8 @@ mod tests {
         assert!(result.is_err());
         assert_eq!(bank.calc_balance().assets, 3u64);
         let bank_helper = BankHelper { bank: &bank };
-        assert_eq!(bank_helper.balance_sheet_for("name1"), Balance::new(2i64));
-        assert_eq!(bank_helper.balance_sheet_for("name2"), Balance::new(1i64));
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(2i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(1i64));
     }
 
     struct BankHelper<'a> {
@@ -246,7 +246,7 @@ mod tests {
     }
 
     impl<'a> BankHelper<'a> {
-        fn balance_sheet_for(&self, username: &str) -> Balance {
+        fn balance_for(&self, username: &str) -> Balance {
             (*self.bank).balance_of_user(username.to_string())
         }
     }
