@@ -56,9 +56,7 @@ impl Bank {
         amount: i64,
     ) -> Result<(), TransferFundsError> {
         let receiver_position = match self.index_of_user_by_username(receiver) {
-            None => {
-                return Err(ReceiverNotExistsError);
-            }
+            None => return Err(ReceiverNotExistsError),
             Some(index) => index,
         };
 
