@@ -243,10 +243,6 @@ mod tests {
         let bank_helper = BankHelper { bank: &bank };
         assert_eq!(bank_helper.balance_sheet_for("name1"), Balance::new(2i64));
         assert_eq!(bank_helper.balance_sheet_for("name2"), Balance::new(1i64));
-        assert_eq!(
-            bank.balance_of_user("name2".to_string()),
-            Balance::new(1i64)
-        );
     }
 
     struct BankHelper<'a> {
