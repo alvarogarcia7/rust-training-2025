@@ -25,6 +25,21 @@ struct Bank {
     debit_interest: u64,
 }
 
+impl Bank {
+    pub(crate) fn accrue_interest(&mut self) {
+        for user in self.users.iter_mut() {
+            match user.balance >= 0 {
+                true => {
+                    user.balance += (user.balance * self.debit_interest as i64) / 100;
+                }
+                false => {
+                    user.balance += (user.balance * self.credit_interest as i64) / 100;
+                }
+            }
+        }
+    }
+}
+
 impl Bank {}
 
 #[derive(Debug)]
@@ -230,6 +245,19 @@ mod tests {
         let bank_helper = BankHelper { bank: &bank };
         assert_eq!(bank_helper.balance_for("name1"), Balance::new(2i64));
         assert_eq!(bank_helper.balance_for("name2"), Balance::new(1i64));
+    }
+
+    #[test]
+    fn accrue_interest() {
+        let user1 = User::new("name1".to_string(), 0u64, -100i64);
+        let user2 = User::new("name2".to_string(), 0u64, 100i64);
+        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        bank.accrue_interest();
+
+        let bank_helper = BankHelper { bank: &bank };
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(-104i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(101i64));
     }
 
     struct BankHelper<'a> {
