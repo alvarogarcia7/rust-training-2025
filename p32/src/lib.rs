@@ -28,6 +28,20 @@ struct Bank {
 impl Bank {
     pub(crate) fn merge_bank(&mut self, _other: &mut Bank) -> Bank {
         let mut merged_users: Vec<User> = vec![];
+        // TODO: is there a function call chain to zip by a given property?
+        // Instead of:
+        // self.users.iter().zip(merged_users.iter_mut()).for_each(|(user, merged_user)| {})
+        // Try:
+        // https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.chunk_by
+        //
+        // self.users.chunk_by(|user| user.name);
+        // Not working because the lambda needs to be a predicate
+        //
+        // Try
+        // v.into_iter().map(|n| (n, f(n))).collect();, from https://www.reddit.com/r/rust/comments/18m24wb/how_to_convert_vec_to_hashmap/
+        // let users_by_name = self.users.into_iter().map(|n| (n.name, n)).collect();
+        // Compilation error = Cannot move 
+
         for user in &mut self.users {
             let maybe_overlapping_user = _other.users.iter_mut().find(|x| x.name == user.name);
             let mut balance = user.balance;
