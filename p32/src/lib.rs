@@ -240,7 +240,7 @@ mod tests {
 
         assert!(result.is_err());
         assert_eq!(bank.calc_balance().assets, 3u64);
-        BankHelper { bank: &bank }.balance_sheet_for_user("name1");
+        BankHelper { bank: &bank }.balance_sheet_for("name1");
         assert_eq!(
             bank.balance_of_user("name1".to_string()),
             Balance::new(2i64)
@@ -256,7 +256,7 @@ mod tests {
     }
 
     impl<'a> BankHelper<'a> {
-        fn balance_sheet_for_user(&self, username: &str) -> Balance {
+        fn balance_sheet_for(&self, username: &str) -> Balance {
             (*self.bank).balance_of_user(username.to_string())
         }
     }
