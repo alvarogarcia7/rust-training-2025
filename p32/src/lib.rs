@@ -40,7 +40,7 @@ impl Bank {
         // Try
         // v.into_iter().map(|n| (n, f(n))).collect();, from https://www.reddit.com/r/rust/comments/18m24wb/how_to_convert_vec_to_hashmap/
         // let users_by_name = self.users.into_iter().map(|n| (n.name, n)).collect();
-        // Compilation error = Cannot move 
+        // Compilation error = Cannot move
 
         for user in &mut self.users {
             let maybe_overlapping_user = _other.users.iter_mut().find(|x| x.name == user.name);
@@ -54,7 +54,11 @@ impl Bank {
         }
 
         for non_overlapping_user in &_other.users {
-            merged_users.push(User::new(non_overlapping_user.name.clone(), non_overlapping_user.credit_line, non_overlapping_user.balance));
+            merged_users.push(User::new(
+                non_overlapping_user.name.clone(),
+                non_overlapping_user.credit_line,
+                non_overlapping_user.balance,
+            ));
         }
 
         Bank {
