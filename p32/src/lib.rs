@@ -61,9 +61,7 @@ impl Bank {
         };
 
         let sender_position = match self.index_of_user_by_username(sender) {
-            None => {
-                return Err(SenderNotExistsError);
-            }
+            None => return Err(SenderNotExistsError),
             Some(x) => x,
         };
 
