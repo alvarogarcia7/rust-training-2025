@@ -26,6 +26,33 @@ struct Bank {
 }
 
 impl Bank {
+    pub(crate) fn merge_bank(&mut self, _other: &mut Bank) -> Bank {
+        let mut merged_users: Vec<User> = vec![];
+        for user in &mut self.users {
+            let maybe_overlapping_user = _other.users.iter_mut().find(|x| x.name == user.name);
+            let mut balance = user.balance;
+            if let Some(overlapping_user) = maybe_overlapping_user {
+                balance += overlapping_user.balance;
+                overlapping_user.balance = 0;
+            }
+            _other.users.retain(|x| x.name != user.name);
+            merged_users.push(User::new(user.name.clone(), user.credit_line, balance));
+        }
+
+        for non_overlapping_user in &_other.users {
+            merged_users.push(User::new(non_overlapping_user.name.clone(), non_overlapping_user.credit_line, non_overlapping_user.balance));
+        }
+
+        Bank {
+            users: merged_users,
+            name: self.name.clone(),
+            credit_interest: self.credit_interest,
+            debit_interest: self.debit_interest,
+        }
+    }
+}
+
+impl Bank {
     pub(crate) fn accrue_interest(&mut self) {
         for user in self.users.iter_mut() {
             let applicable_interest = match user.balance >= 0 {
@@ -255,6 +282,22 @@ mod tests {
         let bank_helper = BankHelper { bank: &bank };
         assert_eq!(bank_helper.balance_for("name1"), Balance::new(-104i64));
         assert_eq!(bank_helper.balance_for("name2"), Balance::new(101i64));
+    }
+    #[test]
+    fn merge_bank() {
+        let user1_1 = User::new("name1".to_string(), 0u64, 4i64);
+        let mut bank1 = Bank::new(vec![user1_1], "Bank1".to_string(), 4u64, 1u64);
+        let user1_2 = User::new("name1".to_string(), 0u64, 4i64);
+        let user2 = User::new("name2".to_string(), 0u64, 2i64);
+        let user3 = User::new("name3".to_string(), 0u64, 3i64);
+        let mut bank2 = Bank::new(vec![user1_2, user2, user3], "Bank2".to_string(), 4u64, 1u64);
+
+        let merged_bank = bank1.merge_bank(&mut bank2);
+
+        let bank_helper = BankHelper { bank: &merged_bank };
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(2 * 4i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(2i64));
+        assert_eq!(bank_helper.balance_for("name3"), Balance::new(3i64));
     }
 
     struct BankHelper<'a> {
