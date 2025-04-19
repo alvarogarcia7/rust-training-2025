@@ -58,14 +58,17 @@ impl Bank {
         let sender_position = self.index_of_user_by_username(sender);
         let receiver_position = self.index_of_user_by_username(receiver);
 
-        if sender_position.is_none() {
-            return Err(SenderNotExistsError);
-        }
+        let sender_position = match sender_position {
+            None => {
+                return Err(SenderNotExistsError);
+            }
+            Some(x) => x,
+        };
+
         if receiver_position.is_none() {
             return Err(ReceiverNotExistsError);
         }
 
-        let sender_position = sender_position.unwrap();
         let receiver_position = receiver_position.unwrap();
 
         if self.users[sender_position].balance < amount {
