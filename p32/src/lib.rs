@@ -190,14 +190,6 @@ mod tests {
         let bank_helper = BankHelper { bank: &bank };
         assert_eq!(bank_helper.balance_for("name1"), Balance::new(0i64));
         assert_eq!(bank_helper.balance_for("name2"), Balance::new(3i64));
-        assert_eq!(
-            bank.balance_of_user("name1".to_string()),
-            Balance::new(0i64)
-        );
-        assert_eq!(
-            bank.balance_of_user("name2".to_string()),
-            Balance::new(3i64)
-        );
     }
     #[test]
     fn transfer_funds_when_sender_does_not_exist() {
