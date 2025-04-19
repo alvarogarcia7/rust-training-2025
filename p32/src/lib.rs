@@ -28,13 +28,9 @@ struct Bank {
 impl Bank {
     pub(crate) fn accrue_interest(&mut self) {
         for user in self.users.iter_mut() {
-            match user.balance >= 0 {
-                true => {
-                    user.balance += (user.balance * self.debit_interest as i64) / 100;
-                }
-                false => {
-                    user.balance += (user.balance * self.credit_interest as i64) / 100;
-                }
+            user.balance += match user.balance >= 0 {
+                true => (user.balance * self.debit_interest as i64) / 100,
+                false => (user.balance * self.credit_interest as i64) / 100,
             }
         }
     }
