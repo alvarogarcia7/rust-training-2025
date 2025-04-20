@@ -74,6 +74,13 @@ mod tests {
     fn add_overflow_first_element() {
         assert_eq!(BigUint4096::from(vec![0u64, 1u64]), add(u64::MAX, 1));
     }
+    #[test]
+    fn add_overflow_second_element() {
+        assert_eq!(
+            BigUint4096::from(vec![0u64, 0u64, 1u64]),
+            BigUint4096::from(vec![u64::MAX, u64::MAX]) + BigUint4096::from(vec![1u64])
+        )
+    }
 
     fn assert_eq_biguint4096(expected: u64, actual: BigUint4096) {
         assert_eq!(BigUint4096::from(expected), actual);
