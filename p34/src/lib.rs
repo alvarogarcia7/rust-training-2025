@@ -81,6 +81,16 @@ mod tests {
             BigUint4096::from(vec![u64::MAX, u64::MAX]) + BigUint4096::from(vec![1u64])
         )
     }
+    #[test]
+    fn add_max_result() {
+        let mut max_minus_one = vec![u64::MAX; 64];
+        max_minus_one[0] -= 1;
+
+        assert_eq!(
+            BigUint4096::from(vec![u64::MAX; 64]),
+            BigUint4096::from(max_minus_one) + BigUint4096::from(vec![1u64])
+        )
+    }
 
     fn assert_eq_biguint4096(expected: u64, actual: BigUint4096) {
         assert_eq!(BigUint4096::from(expected), actual);
