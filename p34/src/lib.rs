@@ -45,6 +45,7 @@ mod tests {
 
     #[test]
     fn add_0_0() {
+        assert_eq_biguint4096(0, add(0,0));
         assert!(BigUint4096::from(0).eq(&(BigUint4096::from(0u64) + BigUint4096::from(0u64))));
     }
 
