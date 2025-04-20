@@ -96,7 +96,7 @@ mod tests {
         )
     }
     #[test]
-    fn add_max_result() {
+    fn add_to_max_result() {
         let mut max_minus_one = vec![u64::MAX; 64];
         max_minus_one[0] -= 1;
 
