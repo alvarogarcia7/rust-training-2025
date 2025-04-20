@@ -58,9 +58,6 @@ mod tests {
 
     #[test]
     fn add_0_1() {
-        let result: BigUint4096 = BigUint4096::from(0u64) + BigUint4096::from(1u64);
-        let expected = BigUint4096::from(1);
-        assert!(expected.eq(&result));
         assert_eq_biguint4096(1, add(0, 1));
     }
 }
