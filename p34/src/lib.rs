@@ -48,16 +48,16 @@ mod tests {
         assert_eq_biguint4096(0, add(0,0));
     }
 
+    #[test]
+    fn add_0_1() {
+        assert_eq_biguint4096(1, add(0, 1));
+    }
+
     fn assert_eq_biguint4096(expected: u64, actual: BigUint4096) {
         assert_eq!(BigUint4096::from(expected), actual);
     }
 
     fn add(p0: u64, p1: u64) -> BigUint4096 {
         BigUint4096::from(p0) + BigUint4096::from(p1)
-    }
-
-    #[test]
-    fn add_0_1() {
-        assert_eq_biguint4096(1, add(0, 1));
     }
 }
