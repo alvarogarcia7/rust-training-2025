@@ -34,6 +34,9 @@ impl ops::Add<BigUint4096> for BigUint4096 {
             (*item, carry_from_second) = item.overflowing_add(_rhs.values[i]);
             carry = carry_from_first || carry_from_second;
         }
+        if carry {
+            panic!("attempt to add with overflow")
+        }
         BigUint4096 { values }
     }
 }
@@ -104,6 +107,12 @@ mod tests {
             BigUint4096::from(vec![u64::MAX; 64]),
             BigUint4096::from(max_minus_one) + BigUint4096::from(vec![1u64])
         )
+    }
+
+    #[test]
+    #[should_panic(expected = "attempt to add with overflow")]
+    fn overflow_max_element() {
+        let _ = BigUint4096::from(vec![u64::MAX; 64]) + BigUint4096::from(vec![1u64]);
     }
 
     fn assert_eq_biguint4096(expected: u64, actual: BigUint4096) {
