@@ -162,12 +162,7 @@ impl Bank {
 }
 
 impl Bank {
-    pub fn new(
-        users: Vec<User>,
-        name: String,
-        credit_interest: u64,
-        debit_interest: u64,
-    ) -> Self {
+    pub fn new(users: Vec<User>, name: String, credit_interest: u64, debit_interest: u64) -> Self {
         Bank {
             users,
             name,
