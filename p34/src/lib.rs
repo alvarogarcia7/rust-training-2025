@@ -74,17 +74,17 @@ impl TryFrom<String> for BigUint4096 {
         if value.len() > 1024 || value.is_empty() || value.len() % 2 != 0 {
             return Err(TryFromUint4096Error(()));
         }
-        let mut bs = (0..value.len())
+        // from https://stackoverflow.com/questions/52987181/how-can-i-convert-a-hex-string-to-a-u8-slice
+        let mut bytes = (0..value.len())
             .step_by(2)
             .map(|i| u8::from_str_radix(&value[i..i + 2], 16).unwrap())
             .collect::<Vec<u8>>();
-        bs.reverse();
+        bytes.reverse();
 
         let mut values = [0u64; 64];
         let mut i = 0;
         let mut j = 0;
-        for byte in bs.iter() {
-            println!("{:?}", i);
+        for byte in bytes.iter() {
             values[j] += *byte as u64 >> (i * 8);
             i += 1;
             if i == 8 {
