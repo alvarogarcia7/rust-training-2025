@@ -40,6 +40,28 @@ impl ops::Add<BigUint4096> for BigUint4096 {
         BigUint4096 { values }
     }
 }
+impl ops::Add<&BigUint4096> for &BigUint4096 {
+    type Output = BigUint4096;
+
+    fn add(self, _rhs: &BigUint4096) -> BigUint4096 {
+        let mut values = self.values;
+        // for i in 0..64 {
+        let mut carry = false;
+        for (i, item) in values.iter_mut().enumerate() {
+            let mut carry_from_first = false;
+            if carry {
+                (*item, carry_from_first) = item.overflowing_add(1);
+            }
+            let carry_from_second;
+            (*item, carry_from_second) = item.overflowing_add(_rhs.values[i]);
+            carry = carry_from_first || carry_from_second;
+        }
+        if carry {
+            panic!("attempt to add with overflow")
+        }
+        BigUint4096 { values }
+    }
+}
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct TryFromUint4096Error(pub(crate) ());
@@ -114,8 +136,24 @@ mod tests {
     }
 
     #[test]
+    fn add_references_0_0() {
+        assert_eq_biguint4096(
+            0,
+            &BigUint4096::try_from(0).unwrap() + &BigUint4096::try_from(0).unwrap(),
+        );
+    }
+
+    #[test]
     fn add_0_1() {
         assert_eq_biguint4096(1, add(0, 1));
+    }
+
+    #[test]
+    fn add_references_0_1() {
+        assert_eq_biguint4096(
+            1,
+            &BigUint4096::try_from(0).unwrap() + &BigUint4096::try_from(1).unwrap(),
+        );
     }
     #[test]
     fn add_overflow_first_element() {
@@ -155,12 +193,7 @@ mod tests {
         assert_eq!(BigUint4096::try_from(expected).unwrap(), actual);
     }
 
-    /// Create a BigUint4096 from a smaller number
-    fn bu(value: u64) -> BigUint4096 {
-        BigUint4096::try_from(value).unwrap()
-    }
-
     fn add(p0: u64, p1: u64) -> BigUint4096 {
-        bu(p0) + BigUint4096::try_from(p1).unwrap()
+        BigUint4096::try_from(p0).unwrap() + BigUint4096::try_from(p1).unwrap()
     }
 }
