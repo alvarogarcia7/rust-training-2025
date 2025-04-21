@@ -61,8 +61,6 @@ impl Bank {
             ));
         }
 
-        drop(other);
-
         Bank {
             users: merged_users,
             name: self.name.clone(),
