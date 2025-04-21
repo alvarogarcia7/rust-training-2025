@@ -68,6 +68,34 @@ impl TryFrom<Vec<u64>> for BigUint4096 {
         Ok(Self { values })
     }
 }
+impl TryFrom<String> for BigUint4096 {
+    type Error = TryFromUint4096Error;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        if value.len() > 1024 || value.is_empty() || value.len() % 2 != 0 {
+            return Err(TryFromUint4096Error(()));
+        }
+        let mut bs = (0..value.len())
+            .step_by(2)
+            .map(|i| u8::from_str_radix(&value[i..i + 2], 16).unwrap())
+            .collect::<Vec<u8>>();
+        bs.reverse();
+
+        let mut values = [0u64; 64];
+        let mut i = 0;
+        let mut j = 0;
+        for byte in bs.iter() {
+            println!("{:?}", i);
+            values[j] += *byte as u64 >> (i * 8);
+            i += 1;
+            if i == 8 {
+                j += 1;
+                i = 0;
+            }
+        }
+
+        Ok(Self { values })
+    }
+}
 // impl From<&[u64]> for BigUint4096 {
 //     fn from(value: &[u64]) -> Self {
 //         let mut values = [0; 64];
@@ -106,6 +134,62 @@ mod tests {
     #[test]
     fn cannot_try_from_with_array_size_zero() {
         assert!(BigUint4096::try_from(vec![0; 0]).is_err());
+    }
+
+    #[test]
+    fn try_from_string_one_byte() {
+        assert_eq!(
+            BigUint4096::try_from("00".to_string()).unwrap(),
+            BigUint4096::try_from(vec![0u64; 64]).unwrap()
+        );
+    }
+
+    #[test]
+    fn try_from_string_two_bytes() {
+        assert_eq!(
+            BigUint4096::try_from("0000".to_string()).unwrap(),
+            BigUint4096::try_from(vec![0u64; 64]).unwrap()
+        );
+    }
+    #[test]
+    fn try_from_string_one_with_padding_4_char() {
+        let mut one = vec![0u64; 64];
+        one[0] = 1;
+        assert_eq!(
+            BigUint4096::try_from("0001".to_string()).unwrap(),
+            BigUint4096::try_from(one).unwrap()
+        );
+    }
+    #[test]
+    fn try_from_string_one_with_padding_9_char() {
+        let mut one = vec![0u64; 64];
+        one[0] = 1;
+        assert_eq!(
+            BigUint4096::try_from("00000001".to_string()).unwrap(),
+            BigUint4096::try_from(one).unwrap()
+        );
+    }
+    #[test]
+    fn try_from_string_two_u64_digits() {
+        let mut expected = vec![0u64; 64];
+        expected[0] = 1;
+        expected[1] = 1;
+        assert_eq!(
+            BigUint4096::try_from("010000000000000001".to_string()).unwrap(),
+            BigUint4096::try_from(expected).unwrap()
+        );
+    }
+
+    #[test]
+    fn try_from_string_three_u64_digits() {
+        let mut expected = vec![0u64; 64];
+        expected[0] = 1;
+        expected[1] = 1;
+        expected[2] = 1;
+        assert_eq!(
+            BigUint4096::try_from("0100000000000000010000000000000001".to_string()).unwrap(),
+            BigUint4096::try_from(expected).unwrap()
+        );
     }
 
     #[test]
