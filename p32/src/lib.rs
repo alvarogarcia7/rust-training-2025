@@ -60,7 +60,7 @@ impl Bank {
                 non_overlapping_user.balance,
             ));
         }
-        
+
         drop(other);
 
         Bank {
@@ -116,7 +116,9 @@ impl Bank {
             return Err(SenderNotExistsError);
         };
 
-        if self.users[sender_position].balance < amount {
+        if (self.users[sender_position].balance as u64 + self.users[sender_position].credit_line)
+            < (amount as u64)
+        {
             return Err(SenderNotEnoughBalance);
         }
 
@@ -271,12 +273,42 @@ mod tests {
     }
 
     #[test]
-    fn transfer_funds_when_not_enough_balance() {
+    fn transfer_funds_when_not_enough_balance_without_credit_line() {
         let user1 = User::new("name1".to_string(), 0u64, 2i64);
         let user2 = User::new("name2".to_string(), 0u64, 1i64);
         let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
 
         let result = bank.transfer_funds("name1", "name2", 3);
+
+        assert!(result.is_err());
+        assert_eq!(bank.calc_balance().assets, 3u64);
+        let bank_helper = BankHelper { bank: &bank };
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(2i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(1i64));
+    }
+
+    #[test]
+    fn transfer_funds_when_not_enough_balance_but_credit_line_is_enough() {
+        let user1 = User::new("name1".to_string(), 1u64, 2i64);
+        let user2 = User::new("name2".to_string(), 0u64, 1i64);
+        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        let result = bank.transfer_funds("name1", "name2", 3);
+
+        assert!(result.is_ok());
+        assert_eq!(bank.calc_balance().assets, 4u64);
+        let bank_helper = BankHelper { bank: &bank };
+        assert_eq!(bank_helper.balance_for("name1"), Balance::new(-1i64));
+        assert_eq!(bank_helper.balance_for("name2"), Balance::new(4i64));
+    }
+
+    #[test]
+    fn transfer_funds_when_balance_even_plus_credit_line_is_not_enough() {
+        let user1 = User::new("name1".to_string(), 1u64, 2i64);
+        let user2 = User::new("name2".to_string(), 0u64, 1i64);
+        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+
+        let result = bank.transfer_funds("name1", "name2", 4);
 
         assert!(result.is_err());
         assert_eq!(bank.calc_balance().assets, 3u64);
