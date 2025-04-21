@@ -82,8 +82,6 @@ impl Bank {
     }
 }
 
-impl Bank {}
-
 #[derive(Debug)]
 struct Balance {
     value: i64,
