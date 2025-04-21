@@ -106,14 +106,12 @@ impl Bank {
         receiver: &str,
         amount: i64,
     ) -> Result<(), TransferFundsError> {
-        let receiver_position = match self.index_of_user_by_username(receiver) {
-            None => return Err(ReceiverNotExistsError),
-            Some(index) => index,
+        let Some(receiver_position) = self.index_of_user_by_username(receiver) else {
+            return Err(ReceiverNotExistsError);
         };
 
-        let sender_position = match self.index_of_user_by_username(sender) {
-            None => return Err(SenderNotExistsError),
-            Some(x) => x,
+        let Some(sender_position) = self.index_of_user_by_username(sender) else {
+            return Err(SenderNotExistsError);
         };
 
         if self.users[sender_position].balance < amount {
