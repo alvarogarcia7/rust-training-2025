@@ -102,8 +102,8 @@ impl PartialEq<Self> for Balance {
 impl Bank {
     pub(crate) fn transfer_funds(
         &mut self,
-        sender: String,
-        receiver: String,
+        sender: &str,
+        receiver: &str,
         amount: i64,
     ) -> Result<(), TransferFundsError> {
         let receiver_position = match self.index_of_user_by_username(receiver) {
@@ -126,7 +126,7 @@ impl Bank {
         Ok(())
     }
 
-    fn index_of_user_by_username(&self, username: String) -> Option<usize> {
+    fn index_of_user_by_username(&self, username: &str) -> Option<usize> {
         self.users.iter().position(|u| u.name == username)
     }
 }
@@ -234,7 +234,7 @@ mod tests {
         let user2 = User::new("name2".to_string(), 0u64, 1i64);
         let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
 
-        let result = bank.transfer_funds("name1".to_string(), "name2".to_string(), 2);
+        let result = bank.transfer_funds("name1", "name2", 2);
 
         assert!(result.is_ok());
         assert_eq!(bank.calc_balance().assets, 3u64);
@@ -247,8 +247,7 @@ mod tests {
         let user2 = User::new("name2".to_string(), 0u64, 1i64);
         let mut bank = Bank::new(vec![user2], "Bank Name".to_string(), 4u64, 1u64);
 
-        let result: Result<(), TransferFundsError> =
-            bank.transfer_funds("nonexisting".to_string(), "name2".to_string(), 2);
+        let result: Result<(), TransferFundsError> = bank.transfer_funds("nonexisting", "name2", 2);
 
         assert!(result.is_err());
 
@@ -262,8 +261,7 @@ mod tests {
         let user1 = User::new("name1".to_string(), 0u64, 1i64);
         let mut bank = Bank::new(vec![user1], "Bank Name".to_string(), 4u64, 1u64);
 
-        let result: Result<(), TransferFundsError> =
-            bank.transfer_funds("name1".to_string(), "nonexisting".to_string(), 2);
+        let result: Result<(), TransferFundsError> = bank.transfer_funds("name1", "nonexisting", 2);
 
         assert!(result.is_err());
 
@@ -278,7 +276,7 @@ mod tests {
         let user2 = User::new("name2".to_string(), 0u64, 1i64);
         let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
 
-        let result = bank.transfer_funds("name1".to_string(), "name2".to_string(), 3);
+        let result = bank.transfer_funds("name1", "name2", 3);
 
         assert!(result.is_err());
         assert_eq!(bank.calc_balance().assets, 3u64);
@@ -322,12 +320,12 @@ mod tests {
 
     impl BankHelper<'_> {
         fn balance_for(&self, username: &str) -> Balance {
-            (*self.bank).balance_of_user(username.to_string())
+            (*self.bank).balance_of_user(username)
         }
     }
 
     impl Bank {
-        pub(crate) fn balance_of_user(&self, user_name: String) -> Balance {
+        pub(crate) fn balance_of_user(&self, user_name: &str) -> Balance {
             Balance::new(self.users[self.index_of_user_by_username(user_name).unwrap()].balance)
         }
     }
