@@ -20,7 +20,7 @@ impl User {
 
 pub struct Bank {
     users: Vec<User>,
-    name: String,
+    pub name: String,
     credit_interest: u64,
     debit_interest: u64,
 }
