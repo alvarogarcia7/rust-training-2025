@@ -20,11 +20,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-# Use --tests to include the test code in the compilation, avoiding `unused warning` errors
-# e.g.
-# warning: method `calc_balance` is never used
-#   --> p32/src/lib.rs:138:19
-      - run: cargo build --all --all-features --tests
+      - run: cargo build --all --all-features
 
   test:
     runs-on: ubuntu-latest
