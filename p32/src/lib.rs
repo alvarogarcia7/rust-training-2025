@@ -2,7 +2,7 @@ use crate::TransferFundsError::{
     ReceiverNotExistsError, SenderNotEnoughBalance, SenderNotExistsError,
 };
 
-struct User {
+pub struct User {
     name: String,
     credit_line: u64,
     balance: i64,
@@ -18,7 +18,7 @@ impl User {
     }
 }
 
-struct Bank {
+pub struct Bank {
     users: Vec<User>,
     name: String,
     credit_interest: u64,
@@ -26,7 +26,7 @@ struct Bank {
 }
 
 impl Bank {
-    pub(crate) fn merge_bank(&mut self, mut other: Bank) -> Bank {
+    pub fn merge_bank(&mut self, mut other: Bank) -> Bank {
         let mut merged_users: Vec<User> = vec![];
         // TODO: is there a function call chain to zip by a given property?
         // Instead of:
@@ -73,7 +73,7 @@ impl Bank {
 }
 
 impl Bank {
-    pub(crate) fn accrue_interest(&mut self) {
+    pub fn accrue_interest(&mut self) {
         for user in self.users.iter_mut() {
             let applicable_interest = match user.balance >= 0 {
                 true => self.debit_interest,
@@ -85,12 +85,12 @@ impl Bank {
 }
 
 #[derive(Debug)]
-struct Balance {
+pub struct Balance {
     value: i64,
 }
 
 impl Balance {
-    pub(crate) fn new(value: i64) -> Self {
+    pub fn new(value: i64) -> Self {
         Balance { value }
     }
 }
@@ -102,7 +102,7 @@ impl PartialEq<Self> for Balance {
 }
 
 impl Bank {
-    pub(crate) fn transfer_funds(
+    pub fn transfer_funds(
         &mut self,
         sender: &str,
         receiver: &str,
@@ -133,13 +133,13 @@ impl Bank {
     }
 }
 
-struct BalanceSheet {
-    liabilities: u64,
-    assets: u64,
+pub struct BalanceSheet {
+    pub liabilities: u64,
+    pub assets: u64,
 }
 
 impl Bank {
-    pub(crate) fn calc_balance(&self) -> BalanceSheet {
+    pub fn calc_balance(&self) -> BalanceSheet {
         let mut liabilities: i64 = 0;
         let mut assets: i64 = 0;
 
@@ -162,7 +162,7 @@ impl Bank {
 }
 
 impl Bank {
-    pub(crate) fn new(
+    pub fn new(
         users: Vec<User>,
         name: String,
         credit_interest: u64,
@@ -177,7 +177,7 @@ impl Bank {
     }
 }
 
-enum TransferFundsError {
+pub enum TransferFundsError {
     SenderNotExistsError,
     ReceiverNotExistsError,
     SenderNotEnoughBalance,

@@ -1,13 +1,13 @@
-fn nth_item<'a>(data: &'a [usize], n: &usize) -> &'a usize {
+pub fn nth_item<'a>(data: &'a [usize], n: &usize) -> &'a usize {
     &data[*n]
 }
 
-fn increased_by_first_item<'b>(data: &[usize], n: &'b mut usize) -> &'b mut usize {
+pub fn increased_by_first_item<'b>(data: &[usize], n: &'b mut usize) -> &'b mut usize {
     *n += data[0];
     n
 }
 
-struct TwoValues<'a, 'b> {
+pub struct TwoValues<'a, 'b> {
     first: &'a usize,
     second: &'b usize,
 }
