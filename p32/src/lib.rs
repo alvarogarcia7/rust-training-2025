@@ -77,7 +77,7 @@ impl Bank {
                 true => self.debit_interest,
                 false => self.credit_interest,
             };
-            user.balance += user.balance * applicable_interest as i64 / 100;
+            user.balance += user.balance * applicable_interest as i64 / 10_000;
         }
     }
 }
@@ -293,7 +293,7 @@ mod tests {
     fn accrue_interest() {
         let user1 = User::new("name1".to_string(), 0u64, -100i64);
         let user2 = User::new("name2".to_string(), 0u64, 100i64);
-        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 4u64, 1u64);
+        let mut bank = Bank::new(vec![user1, user2], "Bank Name".to_string(), 400u64, 100u64);
 
         bank.accrue_interest();
 
