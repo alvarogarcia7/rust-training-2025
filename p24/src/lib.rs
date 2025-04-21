@@ -1,13 +1,13 @@
-mod bad_lifetimes;
-fn f1(a: &mut (u32, u32), b: bool) -> &mut u32 {
+pub mod bad_lifetimes;
+pub fn f1(a: &mut (u32, u32), b: bool) -> &mut u32 {
     if !b { &mut a.0 } else { &mut a.1 }
 }
 
-fn f2(a: &mut [u32], n: usize) -> &mut u32 {
+pub fn f2(a: &mut [u32], n: usize) -> &mut u32 {
     &mut a[n]
 }
 
-fn f3(a: &mut [u32], n: usize) -> &mut u32 {
+pub fn f3(a: &mut [u32], n: usize) -> &mut u32 {
     if n >= a.len() {
         panic!(
             "index out of bounds: the len is {} but the index is {}",
@@ -18,7 +18,7 @@ fn f3(a: &mut [u32], n: usize) -> &mut u32 {
     &mut a[a.len() - 1 - n]
 }
 
-fn f4(a: &[u32]) -> (&[u32], &[u32], &[u32], &[u32]) {
+pub fn f4(a: &[u32]) -> (&[u32], &[u32], &[u32], &[u32]) {
     let increments = match a.len() % 4 {
         0 => [0, 0, 0, 0],
         1 => [1, 0, 0, 0],
