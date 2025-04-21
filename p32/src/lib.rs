@@ -26,7 +26,7 @@ struct Bank {
 }
 
 impl Bank {
-    pub(crate) fn merge_bank(&mut self, _other: &mut Bank) -> Bank {
+    pub(crate) fn merge_bank(&mut self, other: &mut Bank) -> Bank {
         let mut merged_users: Vec<User> = vec![];
         // TODO: is there a function call chain to zip by a given property?
         // Instead of:
@@ -43,17 +43,17 @@ impl Bank {
         // Compilation error = Cannot move
 
         for user in &mut self.users {
-            let maybe_overlapping_user = _other.users.iter_mut().find(|x| x.name == user.name);
+            let maybe_overlapping_user = other.users.iter_mut().find(|x| x.name == user.name);
             let mut balance = user.balance;
             if let Some(overlapping_user) = maybe_overlapping_user {
                 balance += overlapping_user.balance;
                 overlapping_user.balance = 0;
             }
-            _other.users.retain(|x| x.name != user.name);
+            other.users.retain(|x| x.name != user.name);
             merged_users.push(User::new(user.name.clone(), user.credit_line, balance));
         }
 
-        for non_overlapping_user in &_other.users {
+        for non_overlapping_user in &other.users {
             merged_users.push(User::new(
                 non_overlapping_user.name.clone(),
                 non_overlapping_user.credit_line,
