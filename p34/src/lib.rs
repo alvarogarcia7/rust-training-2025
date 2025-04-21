@@ -57,6 +57,9 @@ impl TryFrom<u64> for BigUint4096 {
 impl TryFrom<Vec<u64>> for BigUint4096 {
     type Error = TryFromUint4096Error;
     fn try_from(value: Vec<u64>) -> Result<Self, Self::Error> {
+        if value.len() > 64 {
+            return Err(TryFromUint4096Error(()));
+        }
         let mut values = [0; 64];
         values[..value.len()].copy_from_slice(&value[..]);
         // for i in 0..value.len() {
@@ -83,6 +86,13 @@ impl TryFrom<Vec<u64>> for BigUint4096 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cannot_try_from_an_array_too_big() {
+        let too_big_input = vec![0; 65];
+
+        assert!(BigUint4096::try_from(too_big_input).is_err(),)
+    }
 
     #[test]
     fn add_0_0() {
