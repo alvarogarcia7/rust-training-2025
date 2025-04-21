@@ -1,7 +1,7 @@
 use std::ops;
 
 #[derive(Debug)]
-struct BigUint4096 {
+pub struct BigUint4096 {
     values: [u64; 64],
 }
 
@@ -41,22 +41,28 @@ impl ops::Add<BigUint4096> for BigUint4096 {
     }
 }
 
-impl From<u64> for BigUint4096 {
-    fn from(value: u64) -> Self {
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct TryFromUint4096Error(pub(crate) ());
+
+impl TryFrom<u64> for BigUint4096 {
+    type Error = TryFromUint4096Error;
+
+    fn try_from(value: u64) -> Result<Self, Self::Error> {
         let mut values = [0; 64];
         values[0] = value;
-        Self { values }
+        Ok(Self { values })
     }
 }
 
-impl From<Vec<u64>> for BigUint4096 {
-    fn from(value: Vec<u64>) -> Self {
+impl TryFrom<Vec<u64>> for BigUint4096 {
+    type Error = TryFromUint4096Error;
+    fn try_from(value: Vec<u64>) -> Result<Self, Self::Error> {
         let mut values = [0; 64];
         values[..value.len()].copy_from_slice(&value[..]);
         // for i in 0..value.len() {
         //     values[i] = value[i];
         // }
-        Self { values }
+        Ok(Self { values })
     }
 }
 // impl From<&[u64]> for BigUint4096 {
@@ -89,13 +95,17 @@ mod tests {
     }
     #[test]
     fn add_overflow_first_element() {
-        assert_eq!(BigUint4096::from(vec![0u64, 1u64]), add(u64::MAX, 1));
+        assert_eq!(
+            BigUint4096::try_from(vec![0u64, 1u64]).unwrap(),
+            add(u64::MAX, 1)
+        );
     }
     #[test]
     fn add_overflow_second_element() {
         assert_eq!(
-            BigUint4096::from(vec![0u64, 0u64, 1u64]),
-            BigUint4096::from(vec![u64::MAX, u64::MAX]) + BigUint4096::from(vec![1u64])
+            BigUint4096::try_from(vec![0u64, 0u64, 1u64]).unwrap(),
+            BigUint4096::try_from(vec![u64::MAX, u64::MAX]).unwrap()
+                + BigUint4096::try_from(vec![1u64]).unwrap()
         )
     }
     #[test]
@@ -104,27 +114,29 @@ mod tests {
         max_minus_one[0] -= 1;
 
         assert_eq!(
-            BigUint4096::from(vec![u64::MAX; 64]),
-            BigUint4096::from(max_minus_one) + BigUint4096::from(vec![1u64])
+            BigUint4096::try_from(vec![u64::MAX; 64]).unwrap(),
+            BigUint4096::try_from(max_minus_one).unwrap()
+                + BigUint4096::try_from(vec![1u64]).unwrap()
         )
     }
 
     #[test]
     #[should_panic(expected = "attempt to add with overflow")]
     fn overflow_max_element() {
-        let _ = BigUint4096::from(vec![u64::MAX; 64]) + BigUint4096::from(vec![1u64]);
+        let _ = BigUint4096::try_from(vec![u64::MAX; 64]).unwrap()
+            + BigUint4096::try_from(vec![1u64]).unwrap();
     }
 
     fn assert_eq_biguint4096(expected: u64, actual: BigUint4096) {
-        assert_eq!(BigUint4096::from(expected), actual);
+        assert_eq!(BigUint4096::try_from(expected).unwrap(), actual);
     }
 
     /// Create a BigUint4096 from a smaller number
     fn bu(value: u64) -> BigUint4096 {
-        BigUint4096::from(value)
+        BigUint4096::try_from(value).unwrap()
     }
 
     fn add(p0: u64, p1: u64) -> BigUint4096 {
-        bu(p0) + BigUint4096::from(p1)
+        bu(p0) + BigUint4096::try_from(p1).unwrap()
     }
 }
