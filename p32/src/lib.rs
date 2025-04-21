@@ -60,7 +60,7 @@ impl Bank {
                 non_overlapping_user.balance,
             ));
         }
-        
+
         self.users = merged_users;
     }
 }
@@ -74,23 +74,6 @@ impl Bank {
             };
             user.balance += user.balance * applicable_interest as i64 / 10_000;
         }
-    }
-}
-
-#[derive(Debug)]
-pub struct Balance {
-    value: i64,
-}
-
-impl Balance {
-    pub fn new(value: i64) -> Self {
-        Balance { value }
-    }
-}
-
-impl PartialEq<Self> for Balance {
-    fn eq(&self, other: &Self) -> bool {
-        self.value == other.value
     }
 }
 
@@ -174,6 +157,23 @@ pub enum TransferFundsError {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[derive(Debug)]
+    pub struct Balance {
+        value: i64,
+    }
+
+    impl Balance {
+        pub fn new(value: i64) -> Self {
+            Balance { value }
+        }
+    }
+
+    impl PartialEq<Self> for Balance {
+        fn eq(&self, other: &Self) -> bool {
+            self.value == other.value
+        }
+    }
 
     #[test]
     fn user_constructor_fields() {
