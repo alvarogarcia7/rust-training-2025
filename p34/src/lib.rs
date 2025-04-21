@@ -1,22 +1,15 @@
 use std::ops;
 
-#[derive(Debug)]
+#[derive(Debug, Hash, PartialEq)]
 pub struct BigUint4096 {
     values: [u64; 64],
 }
 
-impl PartialEq for BigUint4096 {
-    fn eq(&self, other: &Self) -> bool {
-        for i in 0..64 {
-            if self.values[i] != other.values[i] {
-                return false;
-            }
-        }
-        true
+impl Default for BigUint4096 {
+    fn default() -> Self {
+        Self { values: [0; 64] }
     }
 }
-
-impl Eq for BigUint4096 {}
 
 impl ops::Add<BigUint4096> for BigUint4096 {
     type Output = BigUint4096;
