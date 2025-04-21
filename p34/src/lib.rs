@@ -96,20 +96,6 @@ impl TryFrom<String> for BigUint4096 {
         Ok(Self { values })
     }
 }
-// impl From<&[u64]> for BigUint4096 {
-//     fn from(value: &[u64]) -> Self {
-//         let mut values = [0; 64];
-//         // values[..value.len()].copy_from_slice(&value[..]);
-//         // for i in 0..value.len() {
-//         //     values[i] = value[i];
-//         // }
-//         Self { values }
-//     }
-// }
-//
-// impl BigUint4096 {
-//     // pub const MAX: BigUint4096 =
-// }
 
 #[cfg(test)]
 mod tests {
