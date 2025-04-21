@@ -22,22 +22,7 @@ impl ops::Add<BigUint4096> for BigUint4096 {
     type Output = BigUint4096;
 
     fn add(self, _rhs: BigUint4096) -> BigUint4096 {
-        let mut values = self.values;
-        // for i in 0..64 {
-        let mut carry = false;
-        for (i, item) in values.iter_mut().enumerate() {
-            let mut carry_from_first = false;
-            if carry {
-                (*item, carry_from_first) = item.overflowing_add(1);
-            }
-            let carry_from_second;
-            (*item, carry_from_second) = item.overflowing_add(_rhs.values[i]);
-            carry = carry_from_first || carry_from_second;
-        }
-        if carry {
-            panic!("attempt to add with overflow")
-        }
-        BigUint4096 { values }
+        &self + &_rhs
     }
 }
 impl ops::Add<&BigUint4096> for &BigUint4096 {
