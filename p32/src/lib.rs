@@ -26,7 +26,7 @@ pub struct Bank {
 }
 
 impl Bank {
-    pub fn merge_bank(&mut self, mut other: Bank) -> Bank {
+    pub fn merge_bank(&mut self, mut other: Bank) {
         let mut merged_users: Vec<User> = vec![];
         // TODO: is there a function call chain to zip by a given property?
         // Instead of:
@@ -60,13 +60,8 @@ impl Bank {
                 non_overlapping_user.balance,
             ));
         }
-
-        Bank {
-            users: merged_users,
-            name: self.name.clone(),
-            credit_interest: self.credit_interest,
-            debit_interest: self.debit_interest,
-        }
+        
+        self.users = merged_users;
     }
 }
 
@@ -331,9 +326,9 @@ mod tests {
         let user3 = User::new("name3".to_string(), 0u64, 3i64);
         let bank2 = Bank::new(vec![user1_2, user2, user3], "Bank2".to_string(), 4u64, 1u64);
 
-        let merged_bank = bank1.merge_bank(bank2);
+        bank1.merge_bank(bank2);
 
-        let bank_helper = BankHelper { bank: &merged_bank };
+        let bank_helper = BankHelper { bank: &bank1 };
         assert_eq!(bank_helper.balance_for("name1"), Balance::new(2 * 4i64));
         assert_eq!(bank_helper.balance_for("name2"), Balance::new(2i64));
         assert_eq!(bank_helper.balance_for("name3"), Balance::new(3i64));
