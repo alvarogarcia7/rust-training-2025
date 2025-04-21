@@ -27,10 +27,10 @@ impl ops::Add<BigUint4096> for BigUint4096 {
         let mut carry = false;
         for (i, item) in values.iter_mut().enumerate() {
             let mut carry_from_first = false;
-            let carry_from_second;
             if carry {
                 (*item, carry_from_first) = item.overflowing_add(1);
             }
+            let carry_from_second;
             (*item, carry_from_second) = item.overflowing_add(_rhs.values[i]);
             carry = carry_from_first || carry_from_second;
         }
