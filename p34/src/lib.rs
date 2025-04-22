@@ -44,13 +44,11 @@ impl ops::Add<&BigUint4096> for &BigUint4096 {
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct TryFromUint4096Error(pub(crate) ());
 
-impl TryFrom<u64> for BigUint4096 {
-    type Error = TryFromUint4096Error;
-
-    fn try_from(value: u64) -> Result<Self, Self::Error> {
+impl From<u64> for BigUint4096 {
+    fn from(value: u64) -> Self {
         let mut values = [0; 64];
         values[0] = value;
-        Ok(Self { values })
+        Self { values }
     }
 }
 
@@ -226,10 +224,7 @@ mod tests {
 
     #[test]
     fn add_references_0_0() {
-        assert_eq_biguint4096(
-            0,
-            &BigUint4096::try_from(0).unwrap() + &BigUint4096::try_from(0).unwrap(),
-        );
+        assert_eq_biguint4096(0, &BigUint4096::from(0) + &BigUint4096::from(0));
     }
 
     #[test]
@@ -239,10 +234,7 @@ mod tests {
 
     #[test]
     fn add_references_0_1() {
-        assert_eq_biguint4096(
-            1,
-            &BigUint4096::try_from(0).unwrap() + &BigUint4096::try_from(1).unwrap(),
-        );
+        assert_eq_biguint4096(1, &BigUint4096::from(0) + &BigUint4096::from(1));
     }
     #[test]
     fn add_overflow_first_element() {
@@ -279,10 +271,10 @@ mod tests {
     }
 
     fn assert_eq_biguint4096(expected: u64, actual: BigUint4096) {
-        assert_eq!(BigUint4096::try_from(expected).unwrap(), actual);
+        assert_eq!(BigUint4096::from(expected), actual);
     }
 
     fn add(p0: u64, p1: u64) -> BigUint4096 {
-        BigUint4096::try_from(p0).unwrap() + BigUint4096::try_from(p1).unwrap()
+        BigUint4096::from(p0) + BigUint4096::from(p1)
     }
 }
