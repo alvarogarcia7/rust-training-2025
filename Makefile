@@ -1,5 +1,17 @@
-pre-commit: test clippy
+pre-commit: test clippy format
 .PHONY: pre-commit
+
+pre-push: test clippy format build
+.PHONY: pre-push
+
+format:
+	cargo fmt --all -- --check
+.PHONY: format
+
+build:
+	cargo build --all --all-features
+.PHONY: build
+
 
 test:
 	cargo test --all --all-features --tests
